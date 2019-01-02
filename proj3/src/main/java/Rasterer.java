@@ -15,6 +15,7 @@ public class Rasterer {
 
     public Rasterer() {
         // YOUR CODE HERE
+
         query_success = true;
     }
 
