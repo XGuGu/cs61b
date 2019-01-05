@@ -20,7 +20,10 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
-
+    private final Map<Long, Location> locations = new HashMap<>();
+    private final Map<Long, Node> nodes = new HashMap<>();
+    private final Map<String, List<Long>> names = new HashMap<>();
+    private final TrieST<Long> st = new TrieST<>();
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -58,6 +61,13 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
+        Iterator<Map.Entry<Long, Node>> nodes_iterator = nodes.entrySet().iterator();
+        while (nodes_iterator.hasNext()) {
+            Map.Entry<Long, Node> item = nodes_iterator.next();
+            if (item.getValue().adj.isEmpty()) {
+                nodes_iterator.remove();
+            }
+        }
     }
 
     /**
