@@ -145,19 +145,39 @@ public class GraphDB {
      * @param lat The target latitude.
      * @return The id of the node in the graph closest to the target.
      */
+//    long closest(double lon, double lat) {
+//        return 0;
+//    }
     long closest(double lon, double lat) {
-        return 0;
+        double shortest = Double.MAX_VALUE;
+        long ret = -117;
+        for (long id : nodes.keySet()) {
+            Node x = nodes.get(id);
+            double current_dist = distance(lon(id), lat(id), lon, lat);
+            if (current_dist < shortest) {
+                shortest = current_dist;
+                ret = id;
+            }
+        }
+        return ret;
     }
-
     /**
      * Gets the longitude of a vertex.
      * @param v The id of the vertex.
      * @return The longitude of the vertex.
      */
+//    double lon(long v) {
+//        return 0;
+//    }
     double lon(long v) {
-        return 0;
+        validateVertex(v);
+        return nodes.get(v).lon;
     }
 
+    double locLon(long v) {
+        validateLocation(v);
+        return locations.get(v).lon;
+    }
     /**
      * Gets the latitude of a vertex.
      * @param v The id of the vertex.
