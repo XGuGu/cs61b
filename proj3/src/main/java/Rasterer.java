@@ -9,13 +9,11 @@ import java.util.Map;
  */
 public class Rasterer {
     private Boolean query_success;
-    private static final double ROOT_W = MapServer.ROOT_LRLON - MapServer.ROOT_ULLON;
-    private static final double ROOT_H = MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT;
-    private static final double ROOT_LONDPP = ROOT_W / MapServer.TILE_SIZE;
+    private static final double ROOT_WIDTH = MapServer.ROOT_LRLON - MapServer.ROOT_ULLON;
+    private static final double ROOT_HEIGHT = MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT;
+    private static final double ROOT_LONDPP = ROOT_WIDTH / MapServer.TILE_SIZE;
 
     public Rasterer() {
-        // YOUR CODE HERE
-
         query_success = true;
     }
 
@@ -51,12 +49,48 @@ public class Rasterer {
         //System.out.println(params);
         double lonDPP = (params.get("lrlon") - params.get("ullon")) / params.get("w");
         int depth = getDepth(lonDPP);
+        double xStepCount = ROOT_WIDTH / Math.pow(2, depth);
+        double yStepCount = ROOT_HEIGHT / Math.pow(2, depth);
+
+        int[] xCounts = horizonCount(params.get("ullon"), params.get("lrlon"), xStepCount);
+        int[] yCounts = verticalCount(params.get("ullat"), params.get("lrlat"), yStepCount);
         Map<String, Object> results = new HashMap<>();
 
+        String[][] images = getImageFiles(depth, xCounts, yCounts);
+
+        results.put("raster_ul_lon", MapServer.ROOT_ULLON + xCounts[0] * xStepCount);
+        results.put("raster_lr_lon", MapServer.ROOT_ULLON + (1.0 + xCounts[1]) * xStepCount);
+        results.put("raster_ul_lat", MapServer.ROOT_ULLAT - yCounts[0] * yStepCount);
+        results.put("raster_lr_lat", MapServer.ROOT_ULLAT - (1.0 + yCounts[1]) * yStepCount);
+        results.put("render_grid", images);
+        results.put("query_success", query_success);
         results.put("depth", depth);
 
-        // Check for valid query box
+
         return results;
+    }
+
+    private String[][] getImageFiles(int d, int[] xCounts, int[] yCounts) {
+        int xlength = xCounts[1] + 1 - xCounts[0];
+        int ylength = yCounts[1] + 1 - yCounts[0];
+        String[][] result = new String[ylength][xlength];
+
+        int yStart = yCounts[0];
+        int yEnd = yCounts[1];
+        int xStart = xCounts[0];
+        int xEnd = xCounts[1];
+
+        for (int i = 0; i + yStart <= yEnd; i++) {
+            for (int j = 0; j + xStart <= xEnd; j++) {
+                String fileName = "d";
+                fileName += Integer.toString(d) + "_x";
+                fileName += Integer.toString(j + xStart) + "_y";
+                fileName += Integer.toString(i + yStart) + ".png";
+                result[i][j] = fileName;
+            }
+        }
+
+        return result;
     }
 
     private int getDepth(double req_lonDPP) {
@@ -71,7 +105,46 @@ public class Rasterer {
         } else {
             return depth;
         }
+    }
 
+    private int[] horizonCount(double userUllon, double userLrlon, double step) {
+        int[] result = new int[2];
+        double currentLon = MapServer.ROOT_ULLON + step;
+        int a = 0;
+        for (; userUllon > currentLon; a++) {
+            currentLon += step;
+        }
+        result[0] = a;
+
+        for (; userLrlon > currentLon; a++) {
+            currentLon += step;
+            if (currentLon > MapServer.ROOT_LRLON) {
+                break;
+            }
+        }
+        result[1] = a;
+
+        return result;
+    }
+
+    private int[] verticalCount(double userUllat, double userLrlat, double step) {
+        int[] result = new int[2];
+        double currentLat = MapServer.ROOT_ULLAT - step;
+        int a = 0;
+        for (; userUllat < currentLat; a++) {
+            currentLat -= step;
+        }
+        result[0] = a;
+
+        for (; userLrlat < currentLat; a++) {
+            currentLat -= step;
+            if (currentLat < MapServer.ROOT_LRLAT) {
+                break;
+            }
+        }
+        result[1] = a;
+
+        return result;
     }
 
 
