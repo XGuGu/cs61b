@@ -20,10 +20,7 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
-    private final Map<Long, Location> locations = new HashMap<>();
-    private final Map<Long, Node> nodes = new HashMap<>();
-    private final Map<String, List<Long>> names = new HashMap<>();
-    private final TrieST<Long> st = new TrieST<>();
+
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -61,13 +58,6 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
-        Iterator<Map.Entry<Long, Node>> nodes_iterator = nodes.entrySet().iterator();
-        while (nodes_iterator.hasNext()) {
-            Map.Entry<Long, Node> item = nodes_iterator.next();
-            if (item.getValue().adj.isEmpty()) {
-                nodes_iterator.remove();
-            }
-        }
     }
 
     /**
@@ -145,39 +135,19 @@ public class GraphDB {
      * @param lat The target latitude.
      * @return The id of the node in the graph closest to the target.
      */
-//    long closest(double lon, double lat) {
-//        return 0;
-//    }
     long closest(double lon, double lat) {
-        double shortest = Double.MAX_VALUE;
-        long ret = -117;
-        for (long id : nodes.keySet()) {
-            Node x = nodes.get(id);
-            double current_dist = distance(lon(id), lat(id), lon, lat);
-            if (current_dist < shortest) {
-                shortest = current_dist;
-                ret = id;
-            }
-        }
-        return ret;
+        return 0;
     }
+
     /**
      * Gets the longitude of a vertex.
      * @param v The id of the vertex.
      * @return The longitude of the vertex.
      */
-//    double lon(long v) {
-//        return 0;
-//    }
     double lon(long v) {
-        validateVertex(v);
-        return nodes.get(v).lon;
+        return 0;
     }
 
-    double locLon(long v) {
-        validateLocation(v);
-        return locations.get(v).lon;
-    }
     /**
      * Gets the latitude of a vertex.
      * @param v The id of the vertex.
