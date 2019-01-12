@@ -47,14 +47,17 @@ public class Rasterer {
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
         //System.out.println(params);
+        Map<String, Object> results = new HashMap<>();
         double lonDPP = (params.get("lrlon") - params.get("ullon")) / params.get("w");
         int depth = getDepth(lonDPP);
+
+        results.put("depth", depth);
         double xStepCount = ROOT_WIDTH / Math.pow(2, depth);
         double yStepCount = ROOT_HEIGHT / Math.pow(2, depth);
 
         int[] xCounts = horizonCount(params.get("ullon"), params.get("lrlon"), xStepCount);
         int[] yCounts = verticalCount(params.get("ullat"), params.get("lrlat"), yStepCount);
-        Map<String, Object> results = new HashMap<>();
+
 
         String[][] images = getImageFiles(depth, xCounts, yCounts);
 
@@ -63,8 +66,14 @@ public class Rasterer {
         results.put("raster_ul_lat", MapServer.ROOT_ULLAT - yCounts[0] * yStepCount);
         results.put("raster_lr_lat", MapServer.ROOT_ULLAT - (1.0 + yCounts[1]) * yStepCount);
         results.put("render_grid", images);
+
+        if (params.get("ullon") > params.get("lrlon") || params.get("lrlat") > params.get("ullat") ||
+                params.get("lrlon") <= MapServer.ROOT_ULLON || params.get("ullon") >= MapServer.ROOT_LRLON ||
+                params.get("lrlat") >= MapServer.ROOT_ULLAT || params.get("ullat") <= MapServer.ROOT_LRLAT) {
+            query_success = false;
+        }
         results.put("query_success", query_success);
-        results.put("depth", depth);
+
 
 
         return results;
