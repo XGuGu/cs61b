@@ -23,6 +23,9 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
+    private Map<Long, Node> spots = new HashMap<>();
+    private Map<Long, Location> sites = new HashMap<>();
+
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -85,6 +88,40 @@ public class GraphDB {
             this.name = name;
         }
     }
+
+    void addNode(long id, double lon, double lat) {
+
+    }
+
+    void addLocation(long id, double lon, double lat) {
+
+    }
+
+    void addEdge(long id1, long id2) {
+
+    }
+
+    void removeNode(long id) {
+
+    }
+
+    double getlat(long id) {
+        return 0;
+    }
+
+    double getlon(long id) {
+        return 0;
+    }
+
+    private boolean isValid(long id) {
+        if(!spots.containsKey(id) && !sites.containsKey(id)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+
 
     /**
      * Returns an iterable of all vertex IDs in the graph.
