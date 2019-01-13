@@ -7,6 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.ArrayList;
+import java.util.*;
+
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -58,6 +60,30 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
+    }
+
+    private class Node {
+        double lon;
+        double lat;
+        List<Long> adjNodes;
+
+        Node(double lon, double lat) {
+            this.lon = lon;
+            this.lat = lat;
+            this.adjNodes = new LinkedList<>();
+        }
+    }
+
+    private class Location {
+        double lon;
+        double lat;
+        String name;
+
+        Location(double lon, double lat, String name) {
+            this.lon = lon;
+            this.lat = lat;
+            this.name = name;
+        }
     }
 
     /**
