@@ -98,27 +98,47 @@ public class GraphDB {
     }
 
     void addEdge(long id1, long id2) {
-
+        if (isNodeValid(id1) && isNodeValid(id2)) {
+            spots.get(id1).adjNodes.add(id2);
+            spots.get(id2).adjNodes.add(id1);
+        } else {
+            throw new IllegalArgumentException("Node not valid.");
+        }
     }
 
     void removeNode(long id) {
 
     }
 
-    double getlat(long id) {
-        return 0;
-    }
-
-    double getlon(long id) {
-        return 0;
-    }
-
-    private boolean isValid(long id) {
-        if(!spots.containsKey(id) && !sites.containsKey(id)) {
-            return false;
+    double locationLat(long id) {
+        if (isLocationValid(id)) {
+            return sites.get(id).lat;
+        } else {
+            throw new IllegalArgumentException("Location not found.");
         }
-        
-        return true;
+
+    }
+
+    double locationLon(long id) {
+        if (isLocationValid(id)) {
+            return sites.get(id).lon;
+        } else {
+            throw new IllegalArgumentException("Location not found.");
+        }
+    }
+
+    private boolean isNodeValid(long id) {
+        if(spots.containsKey(id)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isLocationValid(long id) {
+        if (sites.containsKey(id)) {
+            return true;
+        }
+        return false;
     }
 
 
