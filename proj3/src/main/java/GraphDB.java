@@ -25,6 +25,8 @@ public class GraphDB {
 
     private Map<Long, Node> spots = new HashMap<>();
     private Map<Long, Location> sites = new HashMap<>();
+    private Map<String, List<Long>> wayNames = new HashMap<>();
+
 
     /**
      * Example constructor shows how to create and start an XML parser.
