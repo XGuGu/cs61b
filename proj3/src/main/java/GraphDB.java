@@ -65,12 +65,12 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
-
-        Iterator<Map.Entry<Long, Node>> nodes_iterator = spots.entrySet().iterator();
-        while (nodes_iterator.hasNext()) {
-            Map.Entry<Long, Node> item = nodes_iterator.next();
-            if (item.getValue().adjNodes.isEmpty()) {
-                nodes_iterator.remove();
+        Iterator<Map.Entry<Long, Node>> nodes = spots.entrySet().iterator();
+        while (nodes.hasNext()) {
+            Map.Entry<Long, Node> item = nodes.next();
+            Node n = item.getValue();
+            if (noConnectNode(n)) {
+                nodes.remove();
             }
         }
     }
@@ -120,8 +120,12 @@ public class GraphDB {
         }
     }
 
-    void removeNode(long id) {
-
+    boolean noConnectNode(Node n) {
+        if (n.adjNodes.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     double locationLat(long id) {
@@ -236,19 +240,17 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-
-
         double shortest = Double.MAX_VALUE;
-        long ret = -117;
+        long closestId = -117;
         for (long id : spots.keySet()) {
-            Node x = spots.get(id);
-            double current_dist = distance(lon(id), lat(id), lon, lat);
-            if (current_dist < shortest) {
-                shortest = current_dist;
-                ret = id;
+//            Node n = spots.get(id);
+            double currentDistance = distance(lon(id), lat(id), lon, lat);
+            if (currentDistance < shortest) {
+                shortest = currentDistance;
+                closestId = id;
             }
         }
-        return ret;
+        return closestId;
 
     }
 
@@ -284,10 +286,12 @@ public class GraphDB {
         for (int i = 0; i < length; i++) {
             if (i == 0) {
                 spots.get(highWay.get(i)).nodeNames.add(nodeName);
+                continue;
             }
             addEdge(highWay.get(i - 1), highWay.get(i));
             spots.get(highWay.get(i)).nodeNames.add(nodeName);
         }
+
     }
 
     void addName(long id, double lon, double lat, String name) {
