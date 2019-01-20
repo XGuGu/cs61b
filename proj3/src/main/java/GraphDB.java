@@ -317,6 +317,13 @@ public class GraphDB {
         addLocation(id, lon, lat, name);
         st.put(goodName, id);
 
+    }
 
+    Set<String> nodeNames(long v) {
+        Set<String> names = new HashSet<>();
+        for (String way : spots.get(v).nodeNames) {
+            names.add(way);
+        }
+        return names;
     }
 }

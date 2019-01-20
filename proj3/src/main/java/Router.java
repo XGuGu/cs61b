@@ -124,20 +124,60 @@ public class Router {
         double prevBearing = g.bearing(startNode, route.get(1));
         double distance = 0;
 
+        
 
-        return null; // FIXME
+        return nav; // FIXME
     }
 
     private static String wayName(GraphDB g, long v1, long v2) {
-        Set<String> v1Names = new HashSet<>();
-        Set<String> v2Names = new HashSet<>();
+        Set<String> v1Names = g.nodeNames(v1);
+        Set<String> v2Names = g.nodeNames(v2);
 
-        
-        return "way name";
+        for (String v1Name : v1Names) {
+            for (String v2Name : v2Names) {
+                if (v1Name.equals(v2Name)) {
+                    return v1Name;
+                }
+            }
+        }
+        return "";
     }
 
     private static int direction(double bearing) {
-        return 1;
+        double abs = 0;
+        boolean negative = false;
+        if (bearing <= 180) {
+            abs = Math.abs(bearing);
+        } else {
+            abs = 360 - Math.abs(bearing);
+            negative = true;
+        }
+
+        if (abs <= 15) {
+            return NavigationDirection.STRAIGHT;
+        }
+        if (abs > 15 && abs <= 30) {
+            if (negative) {
+                return NavigationDirection.SLIGHT_LEFT;
+            } else {
+                return NavigationDirection.SLIGHT_RIGHT;
+            }
+        }
+        if (abs > 30 && abs <= 100) {
+            if (negative) {
+                return NavigationDirection.LEFT;
+            } else {
+                return NavigationDirection.RIGHT;
+            }
+        }
+        else {
+            if (negative) {
+                return NavigationDirection.SHARP_LEFT;
+            } else {
+                return NavigationDirection.SHARP_RIGHT;
+            }
+        }
+
     }
 
 
