@@ -26,14 +26,19 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        long start = g.closest(stlon, stlat);
-        long end = g.closest(destlon, destlat);
+        long startNode = g.closest(stlon, stlat);
+        long endNode = g.closest(destlon, destlat);
+
+        Set<Long> visited = new HashSet<>();
+        Map<Long, Double> distanceTo = new HashMap<>();
+        Map<Long, Long> edgeTo = new HashMap<>();
+        System.out.println("start: " + startNode + " end: " + endNode);
 
         PriorityQueue<Long> fringe = new PriorityQueue<Long>(new Comparator<Long>() {
             @Override
             public int compare(Long o1, Long o2) {
-                double o1Dis = g.distance(o1, end);
-                double o2Dis = g.distance(o2, end);
+                double o1Dis = g.distance(o1, endNode);
+                double o2Dis = g.distance(o2, endNode);
 
                 if (o1Dis > o2Dis) {
                     return 1;
@@ -45,7 +50,21 @@ public class Router {
             }
         });
 
+        setAllDistancesToInfinity(g.vertices(), distanceTo);
+
         return null; // FIXME
+    }
+
+    private static void setAllDistancesToInfinity(Iterable<Long> vertices, Map<Long, Double> distanceTo) {
+        for (long v : vertices) {
+            distanceTo.put(v, Double.POSITIVE_INFINITY);
+        }
+
+    }
+
+    private static LinkedList<Long> aStarSearch(Map<Long, Long> edgeTo, long startNode, long destNode) {
+
+        return new LinkedList<>();
     }
 
     /**
