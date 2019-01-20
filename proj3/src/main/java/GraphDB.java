@@ -26,7 +26,7 @@ public class GraphDB {
     private Map<Long, Node> spots = new HashMap<>();
     private Map<Long, Location> sites = new HashMap<>();
     private Map<String, List<Long>> wayNames = new HashMap<>();
-
+    private TrieST<Long> st = new TrieST<>();
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -65,17 +65,27 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
+
+        Iterator<Map.Entry<Long, Node>> nodes_iterator = spots.entrySet().iterator();
+        while (nodes_iterator.hasNext()) {
+            Map.Entry<Long, Node> item = nodes_iterator.next();
+            if (item.getValue().adjNodes.isEmpty()) {
+                nodes_iterator.remove();
+            }
+        }
     }
 
     private class Node {
         double lon;
         double lat;
         List<Long> adjNodes;
+        Set<String> nodeNames;
 
         Node(double lon, double lat) {
             this.lon = lon;
             this.lat = lat;
             this.adjNodes = new LinkedList<>();
+            this.nodeNames = new HashSet<>();
         }
     }
 
@@ -92,11 +102,13 @@ public class GraphDB {
     }
 
     void addNode(long id, double lon, double lat) {
-
+        Node newNode = new Node(lon, lat);
+        spots.put(id, newNode);
     }
 
-    void addLocation(long id, double lon, double lat) {
-
+    void addLocation(long id, double lon, double lat, String locationName) {
+        Location newLoc = new Location(lon, lat, locationName);
+        sites.put(id, newLoc);
     }
 
     void addEdge(long id1, long id2) {
@@ -144,14 +156,13 @@ public class GraphDB {
     }
 
 
-
     /**
      * Returns an iterable of all vertex IDs in the graph.
      * @return An iterable of id's of all vertices in the graph.
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return spots.keySet();
     }
 
     /**
@@ -160,7 +171,11 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        if (isNodeValid(v)) {
+            return spots.get(v).adjNodes;
+        } else {
+            throw new IllegalArgumentException("Node not found.");
+        }
     }
 
     /**
@@ -221,24 +236,70 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+
+
+        double shortest = Double.MAX_VALUE;
+        long ret = -117;
+        for (long id : spots.keySet()) {
+            Node x = spots.get(id);
+            double current_dist = distance(lon(id), lat(id), lon, lat);
+            if (current_dist < shortest) {
+                shortest = current_dist;
+                ret = id;
+            }
+        }
+        return ret;
+
     }
 
     /**
      * Gets the longitude of a vertex.
-     * @param v The id of the vertex.
+     * @param id The id of the vertex.
      * @return The longitude of the vertex.
      */
-    double lon(long v) {
-        return 0;
+    double lon(long id) {
+        if (isNodeValid(id)) {
+            return spots.get(id).lon;
+        } else {
+            throw new IllegalArgumentException("Node not found.");
+        }
     }
 
     /**
      * Gets the latitude of a vertex.
-     * @param v The id of the vertex.
+     * @param id The id of the vertex.
      * @return The latitude of the vertex.
      */
-    double lat(long v) {
-        return 0;
+    double lat(long id) {
+        if (isNodeValid(id)) {
+            return spots.get(id).lat;
+        } else {
+            throw new IllegalArgumentException("Node not found.");
+        }
+    }
+
+
+    void addHighWay(List<Long> highWay, String nodeName) {
+        int length = highWay.size();
+        for (int i = 0; i < length; i++) {
+            if (i == 0) {
+                spots.get(highWay.get(i)).nodeNames.add(nodeName);
+            }
+            addEdge(highWay.get(i - 1), highWay.get(i));
+            spots.get(highWay.get(i)).nodeNames.add(nodeName);
+        }
+    }
+
+    void addName(long id, double lon, double lat, String name) {
+        String goodName = cleanString(name);
+
+        if (!wayNames.containsKey(goodName)) {
+            wayNames.put(goodName, new LinkedList<>());
+        }
+
+        wayNames.get(goodName).add(id);
+        addLocation(id, lon, lat, name);
+        st.put(goodName, id);
+
     }
 }
