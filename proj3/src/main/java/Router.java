@@ -37,8 +37,8 @@ public class Router {
         PriorityQueue<Long> fringe = new PriorityQueue<Long>(new Comparator<Long>() {
             @Override
             public int compare(Long o1, Long o2) {
-                double o1Dis = g.distance(o1, endNode);
-                double o2Dis = g.distance(o2, endNode);
+                double o1Dis = g.distance(o1, endNode) + distanceTo.get(o1);
+                double o2Dis = g.distance(o2, endNode) + distanceTo.get(o2);
 
                 if (o1Dis > o2Dis) {
                     return 1;
@@ -50,21 +50,45 @@ public class Router {
             }
         });
 
-        setAllDistancesToInfinity(g.vertices(), distanceTo);
+        setAllDistancesToInfinity(g.vertices(), distanceTo, edgeTo);
+
+        distanceTo.replace(startNode, 0.0);
+        edgeTo.put(startNode, (long) 0);
+        fringe.add(startNode);
+
+        aStarSearch(fringe, visited, distanceTo, edgeTo, g, endNode);
 
         return null; // FIXME
     }
 
-    private static void setAllDistancesToInfinity(Iterable<Long> vertices, Map<Long, Double> distanceTo) {
+    private static void setAllDistancesToInfinity(Iterable<Long> vertices, Map<Long, Double> distanceTo, Map<Long, Long> edgeTo) {
         for (long v : vertices) {
             distanceTo.put(v, Double.POSITIVE_INFINITY);
+            edgeTo.put(v, (long) -117);
         }
 
     }
 
-    private static LinkedList<Long> aStarSearch(Map<Long, Long> edgeTo, long startNode, long destNode) {
+    private static void aStarSearch(PriorityQueue<Long> fringe, Set<Long> visited, Map<Long, Double> distanceTo,
+                                    Map<Long, Long> edgeTo, GraphDB g, long endNode) {
+        while (!fringe.isEmpty()) {
+            long curr = fringe.poll();
+            if (curr == endNode) {
+                break;
+            }
+            if (!visited.contains(curr)) {
+                visited.add(curr);
+                for (long neighbor : g.adjacent(curr)) {
+                    double distance = distanceTo.get(curr) + g.distance(curr, neighbor);
+                    if (distance < distanceTo.get(neighbor)) {
+                        distanceTo.put(neighbor, distance);
+                        edgeTo.put(neighbor, curr);
+                        fringe.add(neighbor);
+                    }
+                }
+            }
+        }
 
-        return new LinkedList<>();
     }
 
     /**

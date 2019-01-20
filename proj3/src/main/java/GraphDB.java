@@ -299,7 +299,7 @@ public class GraphDB {
     }
 
     /**
-     * Add name to the id 
+     * Add name to the id
      * @param id The id of the highWay.
      * @param lon The lon of the id.
      * @param lat The lat of the id.
