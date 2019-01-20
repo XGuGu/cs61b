@@ -51,17 +51,20 @@ public class Router {
         });
 
         setAllDistancesToInfinity(g.vertices(), distanceTo, edgeTo);
-
         distanceTo.replace(startNode, 0.0);
         edgeTo.put(startNode, (long) 0);
         fringe.add(startNode);
 
         aStarSearch(fringe, visited, distanceTo, edgeTo, g, endNode);
 
-        return null; // FIXME
+        LinkedList<Long> route = new LinkedList<>();
+        route = buildRoute(edgeTo, endNode);
+
+        return route; // FIXME
     }
 
-    private static void setAllDistancesToInfinity(Iterable<Long> vertices, Map<Long, Double> distanceTo, Map<Long, Long> edgeTo) {
+    private static void setAllDistancesToInfinity(Iterable<Long> vertices, Map<Long, Double> distanceTo,
+                                                  Map<Long, Long> edgeTo) {
         for (long v : vertices) {
             distanceTo.put(v, Double.POSITIVE_INFINITY);
             edgeTo.put(v, (long) -117);
@@ -72,23 +75,36 @@ public class Router {
     private static void aStarSearch(PriorityQueue<Long> fringe, Set<Long> visited, Map<Long, Double> distanceTo,
                                     Map<Long, Long> edgeTo, GraphDB g, long endNode) {
         while (!fringe.isEmpty()) {
-            long curr = fringe.poll();
-            if (curr == endNode) {
+            long currentNode = fringe.poll();
+            if (currentNode == endNode) {
                 break;
             }
-            if (!visited.contains(curr)) {
-                visited.add(curr);
-                for (long neighbor : g.adjacent(curr)) {
-                    double distance = distanceTo.get(curr) + g.distance(curr, neighbor);
-                    if (distance < distanceTo.get(neighbor)) {
-                        distanceTo.put(neighbor, distance);
-                        edgeTo.put(neighbor, curr);
-                        fringe.add(neighbor);
-                    }
+
+            if (visited.contains(currentNode)) {
+                continue;
+            }
+
+            visited.add(currentNode);
+            for (long neighbor : g.adjacent(currentNode)) {
+                double distance = distanceTo.get(currentNode) + g.distance(currentNode, neighbor);
+                if (distance < distanceTo.get(neighbor)) {
+                    distanceTo.put(neighbor, distance);
+                    edgeTo.put(neighbor, currentNode);
+                    fringe.add(neighbor);
                 }
             }
         }
 
+    }
+
+    private static LinkedList<Long> buildRoute(Map<Long, Long> edgeTo, long endNode) {
+        LinkedList<Long> route = new LinkedList<>();
+
+        for (long n = endNode; n != 0; n = edgeTo.get(n)) {
+            route.add(0, n);
+        }
+
+        return route;
     }
 
     /**
