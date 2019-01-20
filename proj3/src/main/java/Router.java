@@ -57,10 +57,10 @@ public class Router {
 
         aStarSearch(fringe, visited, distanceTo, edgeTo, g, endNode);
 
-        LinkedList<Long> route = new LinkedList<>();
-        route = buildRoute(edgeTo, endNode);
+//        LinkedList<Long> route = new LinkedList<>();
+//        route = buildRoute(edgeTo, endNode);
 
-        return route; // FIXME
+        return buildRoute(edgeTo, endNode); // FIXME
     }
 
     private static void setAllDistancesToInfinity(Iterable<Long> vertices, Map<Long, Double> distanceTo,
@@ -116,7 +116,28 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
+        List<NavigationDirection> nav = new ArrayList<>();
+        String wayName = "";
+        int currentDir = NavigationDirection.START;
+        double bearing = 0;
+        long startNode = route.get(0);
+        double prevBearing = g.bearing(startNode, route.get(1));
+        double distance = 0;
+
+
         return null; // FIXME
+    }
+
+    private static String wayName(GraphDB g, long v1, long v2) {
+        Set<String> v1Names = new HashSet<>();
+        Set<String> v2Names = new HashSet<>();
+
+        
+        return "way name";
+    }
+
+    private static int direction(double bearing) {
+        return 1;
     }
 
 
