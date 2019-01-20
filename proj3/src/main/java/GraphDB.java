@@ -280,7 +280,11 @@ public class GraphDB {
         }
     }
 
-
+    /**
+     * Add a high way to the spots
+     * @param highWay The ids of the highWay.
+     * @param nodeName The name of the node
+     */
     void addHighWay(List<Long> highWay, String nodeName) {
         int length = highWay.size();
         for (int i = 0; i < length; i++) {
@@ -294,6 +298,14 @@ public class GraphDB {
 
     }
 
+    /**
+     * Add name to the id 
+     * @param id The id of the highWay.
+     * @param lon The lon of the id.
+     * @param lat The lat of the id.
+     * @param name The name of the id
+     */
+
     void addName(long id, double lon, double lat, String name) {
         String goodName = cleanString(name);
 
@@ -304,6 +316,7 @@ public class GraphDB {
         wayNames.get(goodName).add(id);
         addLocation(id, lon, lat, name);
         st.put(goodName, id);
+
 
     }
 }
