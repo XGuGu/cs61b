@@ -123,8 +123,42 @@ public class Router {
         long startNode = route.get(0);
         double prevBearing = g.bearing(startNode, route.get(1));
         double distance = 0;
+        int length = route.size();
 
-        
+        for (int i = 1; i < length; i++) {
+            long currentNode = route.get(i);
+            long prevNode = route.get(i - 1);
+
+
+            double currentBearing = g.bearing(prevNode, currentNode);
+            bearing = currentBearing - prevBearing;
+
+            if (prevNode == startNode) {
+                wayName = wayName(g, prevNode, currentNode);
+            } else {
+                prevBearing = currentBearing;
+            }
+
+            if (g.nodeNames(currentNode).contains(wayName) && i != length - 1) {
+                distance += g.distance(prevNode, currentNode);
+                continue;
+            }
+
+            if (i == length - 1) {
+                distance += g.distance(prevNode, currentNode);
+            }
+            NavigationDirection newDirection = new NavigationDirection();
+
+            newDirection.way = wayName;
+            newDirection.distance = distance;
+            newDirection.direction = currentDir;
+            nav.add(newDirection);
+
+            startNode = currentNode;
+            distance = g.distance(prevNode, currentNode);
+            currentDir = direction(bearing);
+        }
+
 
         return nav; // FIXME
     }
@@ -144,12 +178,22 @@ public class Router {
     }
 
     private static int direction(double bearing) {
-        double abs = 0;
+//        double abs = 0;
+//        boolean negative = true;
+//        if (bearing <= 180) {
+//            abs = Math.abs(bearing);
+//        } else {
+//            abs = 360 - Math.abs(bearing);
+//            negative = false;
+//        }
+
+        double abs = Math.abs(bearing);
         boolean negative = false;
-        if (bearing <= 180) {
-            abs = Math.abs(bearing);
-        } else {
-            abs = 360 - Math.abs(bearing);
+        if (abs > 180) {
+            abs = 360 - abs;
+            bearing *= -1;
+        }
+        if (bearing < 0) {
             negative = true;
         }
 
@@ -179,6 +223,7 @@ public class Router {
         }
 
     }
+
 
 
     /**

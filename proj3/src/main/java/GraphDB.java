@@ -159,6 +159,40 @@ public class GraphDB {
         return false;
     }
 
+    String getWayName(long id) {
+
+        if (isLocationValid(id)) {
+            return sites.get(id).name;
+        } else {
+            throw new IllegalArgumentException("Location not found.");
+        }
+
+    }
+
+    public List<String> getLocationsByPrefix(String prefix) {
+        List<String> locationNameList = new LinkedList<>();
+
+        String cleaned = cleanString(prefix);
+        for (String key : st.keysWithPrefix(cleaned)) {
+            Long id = wayNames.get(key).get(0);
+            String fullName = getWayName(id);
+            locationNameList.add(fullName);
+        }
+
+        return locationNameList;
+    }
+
+    public List<Long> getLocations(String locationName) {
+        List<Long> locationList = new LinkedList<>();
+
+        String cleaned = cleanString(locationName);
+        for (long v : wayNames.get(cleaned)) {
+            locationList.add(v);
+        }
+
+        return locationList;
+    }
+
 
     /**
      * Returns an iterable of all vertex IDs in the graph.
