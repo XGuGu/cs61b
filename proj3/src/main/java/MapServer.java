@@ -306,10 +306,12 @@ public class MapServer {
         List<Long> nodes = graph.getLocations(locationName);
         for (long id : nodes) {
             Map<String, Object> node = new HashMap<>();
-            node.put("id", id);
             node.put("name", locationName);
-            node.put("lon", graph.locationLon(id));
+            node.put("id", id);
             node.put("lat", graph.locationLat(id));
+            node.put("lon", graph.locationLon(id));
+
+            locationList.add(node);
         }
 
         return locationList;
