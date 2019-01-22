@@ -4,12 +4,12 @@ Bear Maps is a web mapping application that can find routes, search position and
 
 ## Key Features and Technical Implementation
 
-##Rasterer
+## Rasterer
 
 Rasterer converts requested map information into pixel-by-pixel image , which allows user to have high resolution of image at different zoom level.
 
-<img src="RDimages/rasterer1.png" width=300>
-<img src="RDimages/rasterer2.png" width=300>
+<img src="RDimages/rasterer1.png" width=500>
+<img src="RDimages/rasterer2.png" width=500>
 
 ```java
 public Map<String, Object> getMapRaster(Map<String, Double> params) {
@@ -45,12 +45,12 @@ public Map<String, Object> getMapRaster(Map<String, Double> params) {
   }
 ```
 
-##GraphDB & GraphBuildingHandler
+## GraphDB & GraphBuildingHandler
 
 GraphDB is implemented for storing contents from Berkeley OSM. So that I can use the map data to build features like autocomplete and route search. GraphBuildingHandler is used by SAX parser to parse Nodes and Ways from the OSM(OpenStreetMap) file.
 
 
-##Route Searching
+## Route Searching
 
 <img src="RDimages/searchRoute.png" width=500>
 
@@ -83,16 +83,16 @@ private static void aStarSearch(PriorityQueue<Long> fringe, Set<Long> visited, M
     }
 ```
 
-##Navigation
+## Navigation
 
 <img src="RDimages/nav.png" width=350>
 
 After user search a route. A list of navigation information is also given by the Router class.
 
-##Search Bar
+## Search Bar
 
 <img src="RDimages/autocomplete.png" width=400>
-<img src="RDimages/searchLocation.png" width=400>
+<img src="RDimages/searchLocation.png" width=550>
 
 The search bar supports prefix. The space and time complexity is improved by using Trie. The red spots on the map represent the locations of the place found.
 
