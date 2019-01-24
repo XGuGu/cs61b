@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.*;
 
@@ -37,8 +38,9 @@ public class GraphDB {
      */
     public GraphDB(String dbPath) {
         try {
-            File inputFile = new File(dbPath);
-            FileInputStream inputStream = new FileInputStream(inputFile);
+//            File inputFile = new File(dbPath);
+//            FileInputStream inputStream = new FileInputStream(inputFile);
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(dbPath);
             // GZIPInputStream stream = new GZIPInputStream(inputStream);
 
             SAXParserFactory factory = SAXParserFactory.newInstance();
