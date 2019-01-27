@@ -1,6 +1,6 @@
 # Bear Maps
 
-[Live Site](http://lingjie-bearmaps.herokuapp.com/map.html)
+## [Live Site](http://lingjie-bearmaps.herokuapp.com/map.html)
 Bear Maps is a web mapping application that can find routes, search position and navigate in Berkeley. This project is from the UC Berkeley's CS61b Data Structures course. I Implemented back end features including [Rasterer](https://github.com/XGuGu/cs61b/blob/master/proj3/src/main/java/Rasterer.java), [GraphDB](https://github.com/XGuGu/cs61b/blob/master/proj3/src/main/java/GraphDB.java), [GraphBuildingHandler](https://github.com/XGuGu/cs61b/blob/master/proj3/src/main/java/GraphBuildingHandler.java) and [Router](https://github.com/XGuGu/cs61b/blob/master/proj3/src/main/java/Router.java).
 
 ## Key Features and Technical Implementation
@@ -86,7 +86,7 @@ private static void aStarSearch(PriorityQueue<Long> fringe, Set<Long> visited, M
 
 ## Navigation
 <img src="RDimages/nav_button.png" width=250>
-<img src="RDimages/nav.png" width=350>
+<img src="RDimages/nav.png" width=450>
 
 After user search a route. A list of navigation information is also given by the Router class.
 
